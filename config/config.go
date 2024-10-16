@@ -25,6 +25,10 @@ func NewConfig() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
+	// 启用自动读取环境变量
+	viper.AutomaticEnv()
+
+	// 绑定环境变量
 	viper.BindEnv("rpc.host", "RPC_HOST")
 	viper.BindEnv("rpc.user", "RPC_USER")
 	viper.BindEnv("rpc.pass", "RPC_PASS")
@@ -38,5 +42,6 @@ func NewConfig() {
 	if err := viper.Unmarshal(&Rpc); err != nil {
 		fmt.Println(fmt.Errorf("error unmarshal confile file,%w", err))
 	}
-
+	fmt.Println(Rpc)
+	fmt.Println(viper.Get("rpc.host"))
 }

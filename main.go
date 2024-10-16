@@ -47,14 +47,14 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 
 	blockchainInfo, err := client.GetBlockChainInfo()
 	if err != nil {
-		return fmt.Errorf("获取区块链信息失败: %v", err)
+		return fmt.Errorf("获取区块信息失败: %v", err)
 	}
 
 	//更新prometheus metrics
 	if blockchainInfo.InitialBlockDownload {
-		bitcoinSyncStatus.Set(1)
+		bitcoinSyncStatus.Set(1) //true syncing
 	} else {
-		bitcoinSyncStatus.Set(0)
+		bitcoinSyncStatus.Set(0) //false synced
 	}
 
 	bitcoinBlockHeight.Set(float64(blockchainInfo.Blocks))
@@ -66,11 +66,17 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 
 func main() {
 	//读取config包里序列化过来的环境变量的值
+	config.NewConfig()
 	rpcHost := config.Rpc.Host
 	rpcUser := config.Rpc.User
 	rpcPass := config.Rpc.Pass
 	rpcPort := config.Rpc.Port
 	useSSL := config.Rpc.Ssl
+	// rpcHost := "43.133.38.47"
+	// rpcUser := "mybtcnode"
+	// rpcPass := "Pasww0rd@!"
+	// rpcPort := 8888
+	// useSSL := false
 
 	err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 	if err != nil {
