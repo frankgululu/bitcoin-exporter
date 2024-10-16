@@ -29,19 +29,18 @@ func NewConfig() {
 	viper.AutomaticEnv()
 
 	// 绑定环境变量
-	viper.BindEnv("rpc.host", "RPC_HOST")
-	viper.BindEnv("rpc.user", "RPC_USER")
-	viper.BindEnv("rpc.pass", "RPC_PASS")
-	viper.BindEnv("rpc.port", "RPC_PORT")
-	viper.BindEnv("rpc.ssl", "RPC_SSL")
+	viper.BindEnv("host", "RPC_HOST")
+	viper.BindEnv("user", "RPC_USER")
+	viper.BindEnv("pass", "RPC_PASS")
+	viper.BindEnv("port", "RPC_PORT")
+	viper.BindEnv("ssl", "RPC_SSL")
 
 	if err := viper.ReadInConfig(); err != nil {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
 	if err := viper.Unmarshal(&Rpc); err != nil {
-		fmt.Println(fmt.Errorf("error unmarshal confile file,%w", err))
+		fmt.Println(fmt.Errorf("error unmarshal confilg file,%w", err))
 	}
-	fmt.Println(Rpc)
-	fmt.Println(viper.Get("rpc.host"))
+	fmt.Println(Rpc.User)
 }

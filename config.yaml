@@ -1,6 +1,5 @@
-rpc:
-  host: 127.0.0.1
-  user: 123456
-  pass: 123456
-  port: 8800
-  ssl: false
+host: 127.0.0.1
+user: dfd
+pass: 123456
+port: 8800
+ssl: false

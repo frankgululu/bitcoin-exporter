@@ -72,11 +72,6 @@ func main() {
 	rpcPass := config.Rpc.Pass
 	rpcPort := config.Rpc.Port
 	useSSL := config.Rpc.Ssl
-	// rpcHost := "43.133.38.47"
-	// rpcUser := "mybtcnode"
-	// rpcPass := "Pasww0rd@!"
-	// rpcPort := 8888
-	// useSSL := false
 
 	err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 	if err != nil {
