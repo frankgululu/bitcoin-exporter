@@ -16,6 +16,7 @@ type RpcConfig struct {
 }
 
 // 实例化结构体
+
 var Rpc RpcConfig
 
 func NewConfig() {
@@ -26,7 +27,7 @@ func NewConfig() {
 	viper.AddConfigPath(".")
 
 	// 启用自动读取环境变量
-	viper.AutomaticEnv()
+	//viper.AutomaticEnv()
 
 	// 绑定环境变量
 	viper.BindEnv("host", "RPC_HOST")
@@ -42,5 +43,4 @@ func NewConfig() {
 	if err := viper.Unmarshal(&Rpc); err != nil {
 		fmt.Println(fmt.Errorf("error unmarshal confilg file,%w", err))
 	}
-	fmt.Println(Rpc.User)
 }

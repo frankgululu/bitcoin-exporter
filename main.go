@@ -3,6 +3,7 @@ package main
 import (
 	"bitcoin-exporter/config"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 
@@ -41,7 +42,7 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 
 	client, err := rpcclient.New(connCfg, nil)
 	if err != nil {
-		return fmt.Errorf("创建RPCkehhuun client失败: %v", err)
+		return fmt.Errorf("创建RPC client失败: %v", err)
 	}
 	defer client.Shutdown()
 
@@ -78,8 +79,12 @@ func main() {
 		slog.Error("update metric to promethues err", slog.Any("err", err))
 		return
 	}
+	addr := "0.0.0.0:2024"
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":2024", nil)
+	fmt.Printf("Starting server at http://%s\n", addr)
+	if err := http.ListenAndServe(addr, nil); err != nil {
+		log.Fatalf("Server failed to start :%v", err)
+	}
 
 }
