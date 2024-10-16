@@ -25,6 +25,7 @@ func NewConfig() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
+	viper.AddConfigPath("/src")
 
 	// 启用自动读取环境变量
 	//viper.AutomaticEnv()
