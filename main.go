@@ -9,8 +9,6 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-
-	"github.com/b2network/bitcoin-exporter/config"
 )
 
 // 1. 定义监控指标
