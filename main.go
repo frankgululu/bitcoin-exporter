@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitcoin-exporter/config"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -8,6 +9,8 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/b2network/bitcoin-exporter/config"
 )
 
 // 1. 定义监控指标
@@ -64,12 +67,12 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 //4. 启动服务
 
 func main() {
-	//定义rpcHost，rpcUser，rpcPass，rpcPort环境变量
-	rpcHost := ""
-	rpcUser := ""
-	rpcPass := ""
-	rpcPort := 8888
-	useSSL := false
+	//读取config包里序列化过来的环境变量的值
+	rpcHost := config.Rpc.Host
+	rpcUser := config.Rpc.User
+	rpcPass := config.Rpc.Pass
+	rpcPort := config.Rpc.Port
+	useSSL := config.Rpc.Ssl
 
 	err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 	if err != nil {
