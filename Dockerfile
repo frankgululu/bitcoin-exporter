@@ -7,6 +7,7 @@ RUN apt-get update && \
 
 FROM alpine:latest
 WORKDIR "/src"
+COPY ./config.yaml /src
 COPY --from=builder /src/build/main /usr/bin/main
 EXPOSE  2024
 CMD ["/usr/bin/main"]
