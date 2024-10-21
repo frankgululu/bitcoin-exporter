@@ -81,12 +81,12 @@ func main() {
 	useSSL := config.Rpc.Ssl
 
 	var mutex sync.Mutex
-	wait := sync.WaitGroup{}
+	//wait := sync.WaitGroup{}
 
 	// 启动 Goroutine，每隔 10 秒更新一次区块链指标
 	go func() {
 		for {
-			wait.Add(1)
+			//wait.Add(1)
 			mutex.Lock()
 			err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 			if err != nil {
