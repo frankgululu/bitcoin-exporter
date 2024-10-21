@@ -2,9 +2,8 @@ package main
 
 import (
 	"bitcoin-exporter/config"
+	"bitcoin-exporter/logger"
 	"fmt"
-	"log"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -43,7 +42,8 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 
 	client, err := rpcclient.New(connCfg, nil)
 	if err != nil {
-		return fmt.Errorf("创建RPC client失败: %v", err)
+		logger.Logger.Error("创建RPC client失败:", "error", err)
+		return nil
 	}
 
 	defer client.Shutdown()
@@ -51,7 +51,8 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 	blockchainInfo, err := client.GetBlockChainInfo()
 
 	if err != nil {
-		return fmt.Errorf("获取区块信息失败: %v", err)
+		logger.Logger.Error("获取区块信息失败:", "error", err)
+		return nil
 	}
 
 	//更新prometheus metrics
@@ -83,7 +84,8 @@ func main() {
 		for {
 			err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 			if err != nil {
-				slog.Error("update metric to promethues err", slog.Any("err", err))
+				logger.Logger.Error("update metric to promethues err", "err", err)
+				//slog.Error("update metric to promethues err", slog.Any("err", err))
 				return
 			}
 			time.Sleep((10 * time.Second))
@@ -94,9 +96,10 @@ func main() {
 	addr := "0.0.0.0:2024"
 
 	http.Handle("/metrics", promhttp.Handler())
-	fmt.Printf("Starting server at http://%s\n", addr)
+	logger.Logger.Info("Staring server at", "address", addr)
 	if err := http.ListenAndServe(addr, nil); err != nil {
-		log.Fatalf("Server failed to start :%v", err)
+		logger.Logger.Error("Server failed to start:", "err", err)
+
 	}
 
 }

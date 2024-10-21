@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"bitcoin-exporter/logger"
 
 	"github.com/spf13/viper"
 )
@@ -20,8 +20,8 @@ type RpcConfig struct {
 var Rpc RpcConfig
 
 func NewConfig() {
-
-	fmt.Println("init config...")
+	logger.Logger.Info("init configureation")
+	//fmt.Println("init config...")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -37,10 +37,13 @@ func NewConfig() {
 	viper.BindEnv("ssl", "RPC_SSL")
 
 	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("fatal error config file: %w", err))
+		logger.Logger.Error("Read config file error", "error", err)
+		return
+		//panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
 	if err := viper.Unmarshal(&Rpc); err != nil {
-		fmt.Println(fmt.Errorf("error unmarshal confilg file,%w", err))
+		logger.Logger.Error("error unmarshal confilg file,", "error", err)
+		//fmt.Println(fmt.Errorf("error unmarshal confilg file,%w", err))
 	}
 }
