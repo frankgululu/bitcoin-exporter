@@ -5,6 +5,7 @@ import (
 	"bitcoin-exporter/logger"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/btcsuite/btcd/rpcclient"
@@ -79,16 +80,23 @@ func main() {
 	rpcPort := config.Rpc.Port
 	useSSL := config.Rpc.Ssl
 
+	var mutex sync.Mutex
+	wait := sync.WaitGroup{}
+
 	// 启动 Goroutine，每隔 10 秒更新一次区块链指标
 	go func() {
 		for {
+			wait.Add(1)
+			mutex.Lock()
 			err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
 			if err != nil {
 				logger.Logger.Error("update metric to promethues err", "err", err)
 				//slog.Error("update metric to promethues err", slog.Any("err", err))
 				return
 			}
+			mutex.Unlock()
 			time.Sleep((10 * time.Second))
+
 		}
 
 	}()
