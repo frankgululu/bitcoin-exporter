@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/prometheus/client_golang/prometheus"
@@ -44,9 +45,11 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 	if err != nil {
 		return fmt.Errorf("创建RPC client失败: %v", err)
 	}
+
 	defer client.Shutdown()
 
 	blockchainInfo, err := client.GetBlockChainInfo()
+
 	if err != nil {
 		return fmt.Errorf("获取区块信息失败: %v", err)
 	}
@@ -61,6 +64,7 @@ func UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass string, rpcPort int, useS
 	bitcoinBlockHeight.Set(float64(blockchainInfo.Blocks))
 
 	return nil
+
 }
 
 //4. 启动服务
@@ -74,11 +78,19 @@ func main() {
 	rpcPort := config.Rpc.Port
 	useSSL := config.Rpc.Ssl
 
-	err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
-	if err != nil {
-		slog.Error("update metric to promethues err", slog.Any("err", err))
-		return
-	}
+	// 启动 Goroutine，每隔 10 秒更新一次区块链指标
+	go func() {
+		for {
+			err := UpdateBlockchainMetrics(rpcHost, rpcUser, rpcPass, rpcPort, useSSL)
+			if err != nil {
+				slog.Error("update metric to promethues err", slog.Any("err", err))
+				return
+			}
+			time.Sleep((10 * time.Second))
+		}
+
+	}()
+
 	addr := "0.0.0.0:2024"
 
 	http.Handle("/metrics", promhttp.Handler())
